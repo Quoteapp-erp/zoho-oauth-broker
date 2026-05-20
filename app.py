@@ -15,7 +15,7 @@ CLIENT_ID = "1000.V1YC2SVWK9BHPFSONMS0N4I6CHMEUQ"
 CLIENT_SECRET = "84471ba45ec3da0cea301f8e0fb75563a19ab2be83"
 
 REDIRECT_URI = (
-    "http://localhost:5001/zoho/callback"
+    "https://zoho-oauth-broker.onrender.com/oauth/callback"
 )
 
 ZOHO_ACCOUNTS_URL = (
