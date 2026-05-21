@@ -90,6 +90,46 @@ def oauth_callback():
 
     token_data = response.json()
 
+    refresh_token = token_data.get(
+        "refresh_token"
+    )
+
+    # ✅ SEND TO ERP
+    if refresh_token:
+
+        try:
+
+            erp_response = requests.post(
+
+                "http://192.168.1.8:5001/complete-zoho-connection",
+
+                json={
+
+                    "connection_id":
+                        state,
+
+                    "refresh_token":
+                        refresh_token,
+
+                    "zoho_email":
+                        "Zoho Connected"
+                },
+
+                timeout=15
+            )
+
+            print(
+                "ERP RESPONSE:",
+                erp_response.text
+            )
+
+        except Exception as e:
+
+            print(
+                "ERP UPDATE ERROR:",
+                str(e)
+            )
+
     return jsonify({
 
         "success": True,
