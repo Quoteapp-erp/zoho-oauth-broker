@@ -9,6 +9,9 @@ import requests
 
 app = Flask(__name__)
 
+# ✅ TEMP STORAGE
+completed_connections = {}
+
 # ✅ ZOHO CONFIG
 CLIENT_ID = "1000.V1YC2SVWK9BHPFSONMS0N4I6CHMEUQ"
 
@@ -94,41 +97,17 @@ def oauth_callback():
         "refresh_token"
     )
 
-    # ✅ SEND TO ERP
-    if refresh_token:
+    # ✅ STORE COMPLETED OAUTH
+    completed_connections[state] = {
 
-        try:
+        "success": True,
 
-            erp_response = requests.post(
+        "refresh_token":
+            refresh_token,
 
-                "http://192.168.1.8:5001/complete-zoho-connection",
-
-                json={
-
-                    "connection_id":
-                        state,
-
-                    "refresh_token":
-                        refresh_token,
-
-                    "zoho_email":
-                        "Zoho Connected"
-                },
-
-                timeout=15
-            )
-
-            print(
-                "ERP RESPONSE:",
-                erp_response.text
-            )
-
-        except Exception as e:
-
-            print(
-                "ERP UPDATE ERROR:",
-                str(e)
-            )
+        "zoho_email":
+            "Zoho Connected"
+    }
 
     return jsonify({
 
@@ -139,6 +118,32 @@ def oauth_callback():
 
         "token_data":
             token_data
+    })
+
+# ✅ CHECK CONNECTION STATUS
+@app.route("/check-status/<connection_id>")
+def check_status(connection_id):
+
+    data = completed_connections.get(
+        connection_id
+    )
+
+    if not data:
+
+        return jsonify({
+
+            "success": False,
+
+            "status": "pending"
+        })
+
+    return jsonify({
+
+        "success": True,
+
+        "status": "connected",
+
+        "data": data
     })
 
 if __name__ == "__main__":
