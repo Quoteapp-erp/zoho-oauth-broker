@@ -44,6 +44,7 @@ def connect():
         f"response_type=code&"
 
         f"access_type=offline&"
+        f"prompt=consent&"
 
         f"redirect_uri={REDIRECT_URI}&"
 
