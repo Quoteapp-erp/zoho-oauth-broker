@@ -110,16 +110,9 @@ def oauth_callback():
             "Zoho Connected"
     }
 
-    return jsonify({
-
-        "success": True,
-
-        "connection_id":
-            state,
-
-        "token_data":
-            token_data
-    })
+    return redirect(
+    "http://192.168.1.8:5001/requirements"
+)
 
 # ✅ CHECK CONNECTION STATUS
 @app.route("/check-status/<connection_id>")
