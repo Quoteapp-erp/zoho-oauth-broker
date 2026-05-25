@@ -33,6 +33,17 @@ def connect():
         "connection_id"
     )
 
+    frontend_url = request.args.get(
+        "frontend_url"
+    )
+
+    # ✅ STORE FRONTEND URL
+    completed_connections[connection_id] = {
+
+        "frontend_url":
+            frontend_url
+    }
+
     oauth_url = (
 
         f"{ZOHO_ACCOUNTS_URL}/oauth/v2/auth?"
@@ -44,6 +55,7 @@ def connect():
         f"response_type=code&"
 
         f"access_type=offline&"
+
         f"prompt=consent&"
 
         f"redirect_uri={REDIRECT_URI}&"
@@ -98,6 +110,15 @@ def oauth_callback():
         "refresh_token"
     )
 
+    # ✅ GET FRONTEND URL
+    frontend_url = completed_connections.get(
+        state,
+        {}
+    ).get(
+        "frontend_url",
+        "http://localhost:5001"
+    )
+
     # ✅ STORE COMPLETED OAUTH
     completed_connections[state] = {
 
@@ -107,12 +128,15 @@ def oauth_callback():
             refresh_token,
 
         "zoho_email":
-            "Zoho Connected"
+            "Zoho Connected",
+
+        "frontend_url":
+            frontend_url
     }
 
     return redirect(
-    "http://192.168.1.8:5001/requirements"
-)
+        f"{frontend_url}/requirements"
+    )
 
 # ✅ CHECK CONNECTION STATUS
 @app.route("/check-status/<connection_id>")
